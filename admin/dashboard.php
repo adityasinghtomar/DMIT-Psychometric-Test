@@ -90,27 +90,27 @@ include '../includes/header.php';
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="../index.php">
+                        <a class="nav-link" href="<?php echo url('index.php'); ?>">
                             <i class="fas fa-tachometer-alt"></i> Main Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="dashboard.php">
+                        <a class="nav-link active" href="<?php echo url('admin/dashboard.php'); ?>">
                             <i class="fas fa-cog"></i> Admin Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="users.php">
+                        <a class="nav-link" href="<?php echo url('admin/users.php'); ?>">
                             <i class="fas fa-users"></i> User Management
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="security.php">
+                        <a class="nav-link" href="<?php echo url('admin/security.php'); ?>">
                             <i class="fas fa-shield-alt"></i> Security Logs
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="settings.php">
+                        <a class="nav-link" href="<?php echo url('admin/settings.php'); ?>">
                             <i class="fas fa-cogs"></i> System Settings
                         </a>
                     </li>

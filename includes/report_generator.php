@@ -120,164 +120,332 @@ class ReportGenerator {
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>DMIT Assessment Report - <?php echo htmlspecialchars($this->subjectData['subject_name']); ?></title>
-            <style>
-                body {
-                    font-family: 'Arial', sans-serif;
-                    line-height: 1.6;
-                    color: #333;
-                    margin: 0;
-                    padding: 20px;
+
+            <!-- Print-specific meta tags to control browser print behavior -->
+            <meta name="print-color-adjust" content="exact">
+            <meta name="color-scheme" content="light">
+
+            <!-- Additional print control -->
+            <style type="text/css" media="print">
+                /* Force hide browser headers/footers */
+                @page {
+                    margin: 15mm;
+                    size: A4;
+                    /* Remove browser headers/footers */
+                    @top-left { content: ""; }
+                    @top-center { content: ""; }
+                    @top-right { content: ""; }
+                    @bottom-left { content: ""; }
+                    @bottom-center { content: ""; }
+                    @bottom-right { content: ""; }
                 }
+
+                /* Hide any browser-generated content */
+                body::before, body::after { display: none !important; }
+                html::before, html::after { display: none !important; }
+            </style>
+            <style>
+                /* Print-friendly CSS for DMIT Report */
+                body {
+                    font-family: 'Times New Roman', serif;
+                    line-height: 1.4;
+                    color: #000;
+                    margin: 0;
+                    padding: 15mm;
+                    font-size: 12pt;
+                    background: white;
+                }
+
+                /* Page setup for printing */
+                @page {
+                    size: A4;
+                    margin: 15mm;
+                }
+
+                /* Header styling */
                 .header {
                     text-align: center;
-                    border-bottom: 3px solid #007bff;
-                    padding-bottom: 20px;
-                    margin-bottom: 30px;
+                    border-bottom: 2px solid #000;
+                    padding-bottom: 15px;
+                    margin-bottom: 25px;
+                    page-break-after: avoid;
                 }
                 .logo {
-                    font-size: 2.5em;
-                    color: #007bff;
-                    margin-bottom: 10px;
+                    font-size: 24pt;
+                    color: #000;
+                    margin-bottom: 8px;
+                    font-weight: bold;
                 }
                 .report-title {
-                    font-size: 1.8em;
-                    color: #333;
-                    margin: 10px 0;
+                    font-size: 18pt;
+                    color: #000;
+                    margin: 8px 0;
+                    font-weight: bold;
                 }
+
+                /* Subject information */
                 .subject-info {
-                    background: #f8f9fa;
-                    padding: 20px;
-                    border-radius: 8px;
-                    margin-bottom: 30px;
+                    background: #f5f5f5;
+                    padding: 15px;
+                    border: 1px solid #ccc;
+                    margin-bottom: 25px;
+                    page-break-inside: avoid;
                 }
                 .info-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                    gap: 15px;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 10px;
                 }
                 .info-item {
-                    padding: 10px;
+                    padding: 8px;
                     background: white;
-                    border-radius: 5px;
-                    border-left: 4px solid #007bff;
+                    border: 1px solid #ddd;
+                    border-left: 3px solid #000;
                 }
+                .info-item strong {
+                    font-weight: bold;
+                }
+
+                /* Section styling */
                 .section {
-                    margin-bottom: 40px;
+                    margin-bottom: 30px;
                     page-break-inside: avoid;
                 }
                 .section-title {
-                    font-size: 1.5em;
-                    color: #007bff;
-                    border-bottom: 2px solid #007bff;
-                    padding-bottom: 10px;
-                    margin-bottom: 20px;
+                    font-size: 16pt;
+                    color: #000;
+                    border-bottom: 1px solid #000;
+                    padding-bottom: 8px;
+                    margin-bottom: 15px;
+                    font-weight: bold;
+                    page-break-after: avoid;
                 }
+
+                /* Intelligence scores grid */
                 .intelligence-grid {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
-                    gap: 20px;
-                    margin-bottom: 20px;
-                }
-                .intelligence-item {
-                    background: #f8f9fa;
-                    padding: 15px;
-                    border-radius: 8px;
-                    text-align: center;
-                }
-                .score {
-                    font-size: 2em;
-                    font-weight: bold;
-                    color: #007bff;
-                }
-                .personality-section {
-                    text-align: center;
-                    background: #f8f9fa;
-                    padding: 30px;
-                    border-radius: 8px;
-                }
-                .personality-icon {
-                    font-size: 4em;
+                    gap: 15px;
                     margin-bottom: 15px;
                 }
+                .intelligence-item {
+                    background: #f9f9f9;
+                    padding: 12px;
+                    border: 1px solid #ccc;
+                    text-align: center;
+                    page-break-inside: avoid;
+                }
+                .score {
+                    font-size: 20pt;
+                    font-weight: bold;
+                    color: #000;
+                    display: block;
+                    margin-bottom: 5px;
+                }
+                .intelligence-item h4 {
+                    font-size: 11pt;
+                    margin: 5px 0;
+                    font-weight: bold;
+                }
+                .intelligence-item p {
+                    font-size: 9pt;
+                    margin: 0;
+                    color: #555;
+                }
+
+                /* Personality section */
+                .personality-section {
+                    text-align: center;
+                    background: #f9f9f9;
+                    padding: 20px;
+                    border: 1px solid #ccc;
+                    page-break-inside: avoid;
+                }
+                .personality-icon {
+                    font-size: 24pt;
+                    margin-bottom: 10px;
+                    color: #000;
+                }
+
+                /* Brain dominance visualization - simplified for print */
                 .brain-visual {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    margin: 20px 0;
+                    text-align: center;
+                    margin: 15px 0;
+                    page-break-inside: avoid;
                 }
                 .brain-hemisphere {
-                    width: 200px;
-                    height: 200px;
-                    border-radius: 50%;
+                    width: 120px;
+                    height: 120px;
+                    border: 2px solid #000;
+                    display: inline-block;
+                    margin: 0 10px;
                     position: relative;
-                    overflow: hidden;
-                    border: 3px solid #333;
+                    vertical-align: top;
+                }
+                .brain-left, .brain-right {
+                    position: absolute;
+                    top: 0;
+                    width: 50%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    font-size: 10pt;
+                    color: #000;
                 }
                 .brain-left {
-                    position: absolute;
                     left: 0;
-                    top: 0;
-                    height: 100%;
-                    background: #007bff;
-                    color: white;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: bold;
+                    background: #e0e0e0;
+                    border-right: 1px solid #000;
                 }
                 .brain-right {
-                    position: absolute;
                     right: 0;
-                    top: 0;
-                    height: 100%;
-                    background: #28a745;
-                    color: white;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: bold;
+                    background: #f0f0f0;
+                    border-left: 1px solid #000;
                 }
+
+                /* Quotient scores grid */
                 .quotient-grid {
-                    display: grid;
-                    grid-template-columns: repeat(4, 1fr);
-                    gap: 20px;
-                    margin-bottom: 20px;
-                }
-                .quotient-item {
-                    text-align: center;
-                    background: #f8f9fa;
-                    padding: 20px;
-                    border-radius: 8px;
-                }
-                .career-list {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
                     gap: 15px;
+                    margin-bottom: 15px;
                 }
-                .career-item {
-                    background: #e3f2fd;
-                    padding: 10px 15px;
-                    border-radius: 5px;
-                    border-left: 4px solid #007bff;
-                }
-                .footer {
-                    margin-top: 50px;
-                    padding-top: 20px;
-                    border-top: 2px solid #007bff;
+                .quotient-item {
                     text-align: center;
-                    color: #666;
-                    font-size: 0.9em;
+                    background: #f9f9f9;
+                    padding: 12px;
+                    border: 1px solid #ccc;
+                    page-break-inside: avoid;
                 }
-                .disclaimer {
-                    background: #fff3cd;
-                    border: 1px solid #ffeaa7;
                     padding: 20px;
                     border-radius: 8px;
-                    margin-top: 30px;
                 }
+                /* Career recommendations */
+                .career-list {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 10px;
+                    margin-bottom: 15px;
+                }
+                .career-item {
+                    background: #f5f5f5;
+                    padding: 8px 12px;
+                    border: 1px solid #ccc;
+                    border-left: 3px solid #000;
+                    font-size: 10pt;
+                    page-break-inside: avoid;
+                }
+
+                /* Footer styling */
+                .footer {
+                    margin-top: 30px;
+                    padding-top: 15px;
+                    border-top: 1px solid #000;
+                    text-align: center;
+                    color: #000;
+                    font-size: 10pt;
+                    page-break-inside: avoid;
+                }
+
+                /* Disclaimer */
+                .disclaimer {
+                    background: #f9f9f9;
+                    border: 1px solid #ccc;
+                    padding: 15px;
+                    margin-top: 20px;
+                    font-size: 9pt;
+                    page-break-inside: avoid;
+                }
+
+                /* Tables for better data presentation */
+                .data-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 15px 0;
+                    font-size: 10pt;
+                }
+                .data-table th, .data-table td {
+                    border: 1px solid #000;
+                    padding: 8px;
+                    text-align: left;
+                }
+                .data-table th {
+                    background: #f0f0f0;
+                    font-weight: bold;
+                }
+
+                /* Print-specific styles */
                 @media print {
-                    body { margin: 0; }
-                    .section { page-break-inside: avoid; }
+                    /* Hide browser headers and footers */
+                    @page {
+                        size: A4;
+                        margin: 15mm;
+                        /* Remove browser headers/footers */
+                        margin-top: 15mm;
+                        margin-bottom: 15mm;
+                    }
+
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-size: 11pt;
+                        line-height: 1.3;
+                        background: white !important;
+                        -webkit-print-color-adjust: exact;
+                    }
+
+                    /* Hide all browser UI elements */
+                    body::before,
+                    body::after {
+                        display: none !important;
+                    }
+
+                    .section {
+                        page-break-inside: avoid;
+                        margin-bottom: 20px;
+                    }
+                    .header {
+                        page-break-after: avoid;
+                    }
+                    .section-title {
+                        page-break-after: avoid;
+                    }
+                    .intelligence-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 10px;
+                    }
+                    .quotient-grid {
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 10px;
+                    }
+                    .career-list {
+                        grid-template-columns: 1fr;
+                        gap: 5px;
+                    }
+                    .brain-visual {
+                        page-break-inside: avoid;
+                    }
+
+                    /* Ensure only our footer shows */
+                    .footer {
+                        position: fixed;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        background: white;
+                        border-top: 1px solid #000;
+                        padding: 10px;
+                        font-size: 9pt;
+                        text-align: center;
+                    }
+
+                    /* Ensure no color backgrounds in print */
+                    * {
+                        -webkit-print-color-adjust: exact !important;
+                        color-adjust: exact !important;
+                    }
                 }
             </style>
         </head>

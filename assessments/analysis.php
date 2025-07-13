@@ -124,7 +124,7 @@ include '../includes/header.php';
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Assessment Analysis</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="fingerprint_collection.php?id=<?php echo $subjectId; ?>" class="btn btn-sm btn-outline-secondary me-2">
+                    <a href="<?php echo url('assessments/fingerprint_collection.php?id=' . $subjectId); ?>" class="btn btn-sm btn-outline-secondary me-2">
                         <i class="fas fa-fingerprint"></i> Edit Fingerprints
                     </a>
                     <?php if ($existingAnalysis): ?>
@@ -168,7 +168,7 @@ include '../includes/header.php';
                 <div class="alert alert-warning">
                     <h5><i class="fas fa-exclamation-triangle"></i> Fingerprint Data Required</h5>
                     <p>At least 8 fingerprint patterns are required for accurate analysis. Currently collected: <?php echo $fingerprintCount; ?>/10</p>
-                    <a href="fingerprint_collection.php?id=<?php echo $subjectId; ?>" class="btn btn-warning">
+                    <a href="<?php echo url('assessments/fingerprint_collection.php?id=' . $subjectId); ?>" class="btn btn-warning">
                         <i class="fas fa-fingerprint"></i> Complete Fingerprint Collection
                     </a>
                 </div>
@@ -434,11 +434,29 @@ new Chart(vakCtx, {
 <?php endif; ?>
 
 <script>
-// Analysis button loading state
-document.getElementById('analysisBtn')?.addEventListener('click', function() {
-    this.disabled = true;
-    this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Analyzing...';
+// Analysis button loading state - FIXED VERSION
+document.getElementById('analysisBtn')?.addEventListener('click', function(e) {
+    // Don't prevent default - let form submit
+    // Just change the button appearance
+    setTimeout(() => {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Analyzing...';
+    }, 100); // Small delay to ensure form submission starts
 });
+
+// Alternative: Handle form submission instead of button click
+const analysisForm = document.querySelector('form[method="POST"]');
+if (analysisForm && document.getElementById('analysisBtn')) {
+    analysisForm.addEventListener('submit', function(e) {
+        const btn = document.getElementById('analysisBtn');
+        if (btn) {
+            setTimeout(() => {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Analyzing...';
+            }, 50);
+        }
+    });
+}
 </script>
 
 <?php include '../includes/footer.php'; ?>

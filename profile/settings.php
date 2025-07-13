@@ -128,27 +128,27 @@ include '../includes/header.php';
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="../index.php">
+                        <a class="nav-link" href="<?php echo url('index.php'); ?>">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../assessments/new.php">
+                        <a class="nav-link" href="<?php echo url('assessments/new.php'); ?>">
                             <i class="fas fa-plus-circle"></i> New Assessment
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../assessments/list.php">
+                        <a class="nav-link" href="<?php echo url('assessments/list.php'); ?>">
                             <i class="fas fa-list"></i> View Assessments
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="settings.php">
+                        <a class="nav-link active" href="<?php echo url('profile/settings.php'); ?>">
                             <i class="fas fa-user-cog"></i> Profile Settings
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../help/user_guide.php">
+                        <a class="nav-link" href="<?php echo url('help/user_guide.php'); ?>">
                             <i class="fas fa-question-circle"></i> Help & Support
                         </a>
                     </li>

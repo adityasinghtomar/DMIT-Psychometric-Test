@@ -80,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             logAudit('assessment_created', 'assessment_subjects', $subjectId);
             
             $success = true;
-            redirect("fingerprint_collection.php?id=$subjectId", 
-                    'Assessment subject created successfully. Please proceed with fingerprint collection.', 
+            redirect("fingerprint_collection.php?id=$subjectId",
+                    'Assessment subject created successfully. Please proceed with fingerprint collection.',
                     'success');
             
         } catch (Exception $e) {
@@ -98,21 +98,21 @@ include '../includes/header.php';
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" id="sidebarMenu">
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="../index.php">
+                        <a class="nav-link" href="<?php echo url('index.php'); ?>">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="new.php">
+                        <a class="nav-link active" href="<?php echo url('assessments/new.php'); ?>">
                             <i class="fas fa-plus-circle"></i> New Assessment
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="list.php">
+                        <a class="nav-link" href="<?php echo url('assessments/list.php'); ?>">
                             <i class="fas fa-list"></i> View Assessments
                         </a>
                     </li>
@@ -125,7 +125,7 @@ include '../includes/header.php';
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">New Assessment</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="list.php" class="btn btn-sm btn-outline-secondary">
+                    <a href="<?php echo url('assessments/list.php'); ?>" class="btn btn-sm btn-outline-secondary">
                         <i class="fas fa-list"></i> View All Assessments
                     </a>
                 </div>
@@ -145,7 +145,7 @@ include '../includes/header.php';
             <?php endif; ?>
 
             <div class="row">
-                <div class="col-lg-8">
+                <div class="col-lg-8 col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <h5><i class="fas fa-user-plus"></i> Assessment Subject Information</h5>
@@ -238,7 +238,7 @@ include '../includes/header.php';
                     </div>
                 </div>
                 
-                <div class="col-lg-4">
+                <div class="col-lg-4 col-md-12 mt-3 mt-lg-0">
                     <div class="card">
                         <div class="card-header">
                             <h6><i class="fas fa-info-circle"></i> Assessment Process</h6>

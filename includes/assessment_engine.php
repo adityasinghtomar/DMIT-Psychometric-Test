@@ -353,24 +353,27 @@ class AssessmentEngine {
         
         $recommendedCareers = array_unique($recommendedCareers);
         
+        // Get numeric scores only (exclude dominant_intelligence string)
+        $numericScores = array_filter($intelligenceScores, 'is_numeric');
+
         return [
             'recommended_streams' => $this->getRecommendedStreams($intelligenceScores),
             'career_roles' => array_slice($recommendedCareers, 0, 10),
             'riasec_scores' => $this->calculateRiasecScores($intelligenceScores),
-            'suitability_percent' => round(max($intelligenceScores) * 0.8, 2)
+            'suitability_percent' => round(max($numericScores) * 0.8, 2)
         ];
     }
     
     // Helper methods for saving data
     private function saveIntelligenceScores($subjectId, $scores) {
         $stmt = $this->conn->prepare("
-            INSERT INTO intelligence_scores 
-            (subject_id, linguistic, logical_math, spatial, kinesthetic, musical, interpersonal, intrapersonal, naturalist, dominant_intelligence) 
+            INSERT INTO intelligence_scores
+            (`subject_id`, `linguistic`, `logical_math`, `spatial`, `kinesthetic`, `musical`, `interpersonal`, `intrapersonal`, `naturalist`, `dominant_intelligence`)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
-            linguistic=VALUES(linguistic), logical_math=VALUES(logical_math), spatial=VALUES(spatial),
-            kinesthetic=VALUES(kinesthetic), musical=VALUES(musical), interpersonal=VALUES(interpersonal),
-            intrapersonal=VALUES(intrapersonal), naturalist=VALUES(naturalist), dominant_intelligence=VALUES(dominant_intelligence)
+            `linguistic`=VALUES(`linguistic`), `logical_math`=VALUES(`logical_math`), `spatial`=VALUES(`spatial`),
+            `kinesthetic`=VALUES(`kinesthetic`), `musical`=VALUES(`musical`), `interpersonal`=VALUES(`interpersonal`),
+            `intrapersonal`=VALUES(`intrapersonal`), `naturalist`=VALUES(`naturalist`), `dominant_intelligence`=VALUES(`dominant_intelligence`)
         ");
         
         $stmt->execute([
@@ -379,9 +382,98 @@ class AssessmentEngine {
             $scores['intrapersonal'], $scores['naturalist'], $scores['dominant_intelligence']
         ]);
     }
-    
-    // Additional helper methods would continue here...
-    // For brevity, I'll include the key ones
+
+    private function savePersonalityProfile($subjectId, $profile) {
+        $stmt = $this->conn->prepare("
+            INSERT INTO personality_profiles
+            (subject_id, primary_type, secondary_type, disc_d, disc_i, disc_s, disc_c, traits)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+            primary_type=VALUES(primary_type), secondary_type=VALUES(secondary_type),
+            disc_d=VALUES(disc_d), disc_i=VALUES(disc_i), disc_s=VALUES(disc_s), disc_c=VALUES(disc_c),
+            traits=VALUES(traits)
+        ");
+
+        $stmt->execute([
+            $subjectId, $profile['primary_type'], $profile['secondary_type'],
+            $profile['disc_d'], $profile['disc_i'], $profile['disc_s'], $profile['disc_c'],
+            json_encode($profile['traits'])
+        ]);
+    }
+
+    private function saveBrainDominance($subjectId, $dominance) {
+        $stmt = $this->conn->prepare("
+            INSERT INTO brain_dominance
+            (subject_id, left_brain_percent, right_brain_percent, dominance_type, characteristics)
+            VALUES (?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+            left_brain_percent=VALUES(left_brain_percent), right_brain_percent=VALUES(right_brain_percent),
+            dominance_type=VALUES(dominance_type), characteristics=VALUES(characteristics)
+        ");
+
+        $stmt->execute([
+            $subjectId, $dominance['left_brain_percent'], $dominance['right_brain_percent'],
+            $dominance['dominance_type'], json_encode($dominance['characteristics'])
+        ]);
+    }
+
+    private function saveLearningStyles($subjectId, $styles) {
+        $stmt = $this->conn->prepare("
+            INSERT INTO learning_styles
+            (subject_id, visual_percent, auditory_percent, kinesthetic_percent, primary_style, learning_tips)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+            visual_percent=VALUES(visual_percent), auditory_percent=VALUES(auditory_percent),
+            kinesthetic_percent=VALUES(kinesthetic_percent), primary_style=VALUES(primary_style),
+            learning_tips=VALUES(learning_tips)
+        ");
+
+        $stmt->execute([
+            $subjectId, $styles['visual_percent'], $styles['auditory_percent'],
+            $styles['kinesthetic_percent'], $styles['primary_style'], json_encode($styles['learning_tips'])
+        ]);
+    }
+
+    private function saveQuotientScores($subjectId, $scores) {
+        $stmt = $this->conn->prepare("
+            INSERT INTO quotient_scores
+            (subject_id, iq_score, eq_score, cq_score, aq_score, overall_score)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+            iq_score=VALUES(iq_score), eq_score=VALUES(eq_score), cq_score=VALUES(cq_score),
+            aq_score=VALUES(aq_score), overall_score=VALUES(overall_score)
+        ");
+
+        $stmt->execute([
+            $subjectId, $scores['iq_score'], $scores['eq_score'], $scores['cq_score'],
+            $scores['aq_score'], $scores['overall_score']
+        ]);
+    }
+
+    private function saveCareerRecommendations($subjectId, $recommendations) {
+        $stmt = $this->conn->prepare("
+            INSERT INTO career_recommendations
+            (subject_id, recommended_streams, career_roles, riasec_scores, suitability_percent)
+            VALUES (?, ?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+            recommended_streams=VALUES(recommended_streams), career_roles=VALUES(career_roles),
+            riasec_scores=VALUES(riasec_scores), suitability_percent=VALUES(suitability_percent)
+        ");
+
+        $stmt->execute([
+            $subjectId, json_encode($recommendations['recommended_streams']),
+            json_encode($recommendations['career_roles']), json_encode($recommendations['riasec_scores']),
+            $recommendations['suitability_percent']
+        ]);
+
+        // Mark analysis as complete
+        $stmt = $this->conn->prepare("
+            UPDATE assessment_subjects
+            SET analysis_complete = 1, analysis_date = CURRENT_TIMESTAMP
+            WHERE id = ?
+        ");
+        $stmt->execute([$subjectId]);
+    }
     
     private function getPersonalityTraits($type) {
         $traits = [
@@ -447,91 +539,6 @@ class AssessmentEngine {
         arsort($discScores);
         $types = array_keys($discScores);
         return isset($types[1]) ? $animalMapping[$types[1]] : null;
-    }
-    
-    // Additional save methods
-    private function savePersonalityProfile($subjectId, $profile) {
-        $stmt = $this->conn->prepare("
-            INSERT INTO personality_profiles 
-            (subject_id, primary_type, secondary_type, disc_d, disc_i, disc_s, disc_c, traits) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-            primary_type=VALUES(primary_type), secondary_type=VALUES(secondary_type),
-            disc_d=VALUES(disc_d), disc_i=VALUES(disc_i), disc_s=VALUES(disc_s), disc_c=VALUES(disc_c),
-            traits=VALUES(traits)
-        ");
-        
-        $stmt->execute([
-            $subjectId, $profile['primary_type'], $profile['secondary_type'],
-            $profile['disc_d'], $profile['disc_i'], $profile['disc_s'], $profile['disc_c'],
-            json_encode($profile['traits'])
-        ]);
-    }
-    
-    private function saveBrainDominance($subjectId, $dominance) {
-        $stmt = $this->conn->prepare("
-            INSERT INTO brain_dominance 
-            (subject_id, left_brain_percent, right_brain_percent, dominance_type, characteristics) 
-            VALUES (?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-            left_brain_percent=VALUES(left_brain_percent), right_brain_percent=VALUES(right_brain_percent),
-            dominance_type=VALUES(dominance_type), characteristics=VALUES(characteristics)
-        ");
-        
-        $stmt->execute([
-            $subjectId, $dominance['left_brain_percent'], $dominance['right_brain_percent'],
-            $dominance['dominance_type'], json_encode($dominance['characteristics'])
-        ]);
-    }
-    
-    private function saveLearningStyles($subjectId, $styles) {
-        $stmt = $this->conn->prepare("
-            INSERT INTO learning_styles 
-            (subject_id, visual_percent, auditory_percent, kinesthetic_percent, primary_style, learning_tips) 
-            VALUES (?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-            visual_percent=VALUES(visual_percent), auditory_percent=VALUES(auditory_percent),
-            kinesthetic_percent=VALUES(kinesthetic_percent), primary_style=VALUES(primary_style),
-            learning_tips=VALUES(learning_tips)
-        ");
-        
-        $stmt->execute([
-            $subjectId, $styles['visual_percent'], $styles['auditory_percent'],
-            $styles['kinesthetic_percent'], $styles['primary_style'], json_encode($styles['learning_tips'])
-        ]);
-    }
-    
-    private function saveQuotientScores($subjectId, $scores) {
-        $stmt = $this->conn->prepare("
-            INSERT INTO quotient_scores 
-            (subject_id, iq_score, eq_score, cq_score, aq_score, overall_score) 
-            VALUES (?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-            iq_score=VALUES(iq_score), eq_score=VALUES(eq_score), cq_score=VALUES(cq_score),
-            aq_score=VALUES(aq_score), overall_score=VALUES(overall_score)
-        ");
-        
-        $stmt->execute([
-            $subjectId, $scores['iq_score'], $scores['eq_score'],
-            $scores['cq_score'], $scores['aq_score'], $scores['overall_score']
-        ]);
-    }
-    
-    private function saveCareerRecommendations($subjectId, $recommendations) {
-        $stmt = $this->conn->prepare("
-            INSERT INTO career_recommendations 
-            (subject_id, recommended_streams, career_roles, riasec_scores, suitability_percent) 
-            VALUES (?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
-            recommended_streams=VALUES(recommended_streams), career_roles=VALUES(career_roles),
-            riasec_scores=VALUES(riasec_scores), suitability_percent=VALUES(suitability_percent)
-        ");
-        
-        $stmt->execute([
-            $subjectId, json_encode($recommendations['recommended_streams']),
-            json_encode($recommendations['career_roles']), json_encode($recommendations['riasec_scores']),
-            $recommendations['suitability_percent']
-        ]);
     }
 }
 ?>

@@ -76,21 +76,21 @@ include '../includes/header.php';
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" id="sidebarMenu">
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="../index.php">
+                        <a class="nav-link" href="<?php echo url('index.php'); ?>">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="new.php">
+                        <a class="nav-link" href="<?php echo url('assessments/new.php'); ?>">
                             <i class="fas fa-plus-circle"></i> New Assessment
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="list.php">
+                        <a class="nav-link active" href="<?php echo url('assessments/list.php'); ?>">
                             <i class="fas fa-list"></i> View Assessments
                         </a>
                     </li>
@@ -273,7 +273,7 @@ include '../includes/header.php';
                                         <td>
                                             <div class="btn-group" role="group">
                                                 <?php if ($assessment['fingerprint_count'] < 8): ?>
-                                                    <a href="fingerprint_collection.php?id=<?php echo $assessment['id']; ?>" 
+                                                    <a href="<?php echo url('assessments/fingerprint_collection.php?id=' . $assessment['id']); ?>"
                                                        class="btn btn-sm btn-outline-primary" title="Collect Fingerprints">
                                                         <i class="fas fa-fingerprint"></i>
                                                     </a>

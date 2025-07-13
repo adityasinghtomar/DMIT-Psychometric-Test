@@ -5,6 +5,44 @@
  */
 
 /**
+ * Generate absolute URL from relative path
+ */
+function url($path = '') {
+    // Remove leading slash if present
+    $path = ltrim($path, '/');
+
+    // For critical pages like index.php, use absolute URL to avoid XAMPP conflicts
+    if ($path === 'index.php' || $path === '') {
+        return BASE_URL . 'index.php';
+    }
+
+    // Get the current script's directory
+    $currentDir = dirname($_SERVER['SCRIPT_NAME']);
+    $baseDir = '/DMIT-Psychometric-Test';
+
+    // Special handling for login.php when we're in auth directory
+    if ($path === 'login.php' && $currentDir === '/DMIT-Psychometric-Test/auth') {
+        return 'login.php'; // Same directory
+    }
+
+    // If we're in a subdirectory, calculate relative path to base
+    if ($currentDir !== $baseDir) {
+        $depth = substr_count(str_replace($baseDir, '', $currentDir), '/');
+        $relativePath = str_repeat('../', $depth);
+        return $relativePath . $path;
+    }
+
+    return $path;
+}
+
+/**
+ * Generate absolute URL for assets and links
+ */
+function asset($path = '') {
+    return BASE_URL . '/' . ltrim($path, '/');
+}
+
+/**
  * Redirect with message
  */
 function redirect($url, $message = '', $type = 'info') {
@@ -12,6 +50,22 @@ function redirect($url, $message = '', $type = 'info') {
         $_SESSION['flash_message'] = $message;
         $_SESSION['flash_type'] = $type;
     }
+
+    // For critical pages, use absolute URL to avoid XAMPP conflicts
+    if ($url === 'index.php' || $url === '') {
+        $url = BASE_URL . 'index.php';
+    } elseif (!preg_match('/^(https?:\/\/|\/)/i', $url)) {
+        // Check if this is a same-directory redirect (no path separators)
+        if (strpos($url, '/') === false) {
+            // Same directory redirect - use as-is
+            // This handles cases like "view.php?id=1" from within assessments/
+            $url = $url;
+        } else {
+            // Cross-directory redirect - use url() function
+            $url = url($url);
+        }
+    }
+
     header("Location: $url");
     exit();
 }

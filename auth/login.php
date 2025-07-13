@@ -8,7 +8,7 @@ require_once '../config/config.php';
 
 // Redirect if already logged in
 if (Security::isAuthenticated()) {
-    header('Location: ../index.php');
+    header('Location: ' . BASE_URL . 'index.php');
     exit();
 }
 
@@ -93,7 +93,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         logAudit('user_login', 'users', $user['id']);
                         
                         // Redirect to dashboard
-                        redirect('../index.php', 'Welcome back, ' . $user['first_name'] . '!', 'success');
+                        header('Location: ' . BASE_URL . 'index.php');
+                        $_SESSION['flash_message'] = 'Welcome back, ' . $user['first_name'] . '!';
+                        $_SESSION['flash_type'] = 'success';
+                        exit();
                         
                     } else {
                         // Failed login - increment attempts

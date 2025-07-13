@@ -237,20 +237,20 @@ class Security {
     /**
      * Require authentication
      */
-    public static function requireAuth($redirectUrl = 'login.php') {
+    public static function requireAuth($redirectUrl = 'auth/login.php') {
         if (!self::isAuthenticated()) {
-            header("Location: $redirectUrl");
-            exit();
+            // Use the global redirect function for proper URL handling
+            redirect($redirectUrl);
         }
     }
     
     /**
      * Require specific role
      */
-    public static function requireRole($requiredRole, $redirectUrl = 'unauthorized.php') {
+    public static function requireRole($requiredRole, $redirectUrl = 'auth/unauthorized.php') {
         if (!self::hasRole($requiredRole)) {
-            header("Location: $redirectUrl");
-            exit();
+            // Use the global redirect function for proper URL handling
+            redirect($redirectUrl);
         }
     }
 }

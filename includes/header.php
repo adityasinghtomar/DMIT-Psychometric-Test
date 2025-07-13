@@ -18,6 +18,8 @@
     
     <!-- Custom CSS -->
     <style>
+        /* Navbar is now regular (not sticky) */
+
         .sidebar {
             position: fixed;
             top: 0;
@@ -42,6 +44,30 @@
         .sidebar .nav-link.active {
             color: #007bff;
             background-color: #e3f2fd;
+        }
+
+        /* Main content area adjustments */
+        .main-content {
+            margin-top: 0;
+            min-height: calc(100vh - 156px);
+            padding-bottom: 100px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 767.98px) {
+            body {
+                padding-top: 56px;
+            }
+            .sidebar {
+                position: relative;
+                top: 0;
+                height: auto;
+                padding: 10px 0;
+            }
+            .main-content {
+                margin-left: 0;
+                min-height: calc(100vh - 100px);
+            }
         }
         
         .navbar-brand {
@@ -190,15 +216,140 @@
             z-index: 1000;
         }
         
+        /* Mobile Responsiveness */
         @media (max-width: 767.98px) {
             .sidebar {
                 position: relative;
                 height: auto;
                 padding: 0;
             }
-            
+
             .fingerprint-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            /* Mobile-specific improvements */
+            .container-fluid {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .card {
+                margin-bottom: 1rem;
+            }
+
+            .btn-toolbar {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .table-responsive {
+                font-size: 0.875rem;
+            }
+
+            .d-flex.justify-content-between {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn-group {
+                width: 100%;
+            }
+
+            .btn-group .btn {
+                flex: 1;
+            }
+
+            /* Hide less important columns on mobile */
+            .table th:nth-child(n+4),
+            .table td:nth-child(n+4) {
+                display: none;
+            }
+
+            /* Stack form elements */
+            .row .col-md-6,
+            .row .col-md-4,
+            .row .col-md-3 {
+                margin-bottom: 1rem;
+            }
+
+            /* Improve quick action buttons */
+            .col-md-3.mb-3 {
+                margin-bottom: 1rem !important;
+            }
+
+            .col-md-3.mb-3 a {
+                min-height: 100px;
+                padding: 1rem;
+            }
+
+            /* Better spacing for mobile */
+            .px-md-4 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
+
+            /* Improve modal on mobile */
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+
+            /* Better form spacing */
+            .form-label {
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+            }
+
+            /* Improve fingerprint collection on mobile */
+            .fingerprint-item {
+                min-height: 100px;
+                padding: 8px;
+            }
+
+            /* Better alert spacing */
+            .alert {
+                margin-bottom: 1rem;
+                padding: 0.75rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            /* Extra small devices */
+            .col-md-3 {
+                margin-bottom: 1rem;
+            }
+
+            .card-header h5,
+            .card-header h6 {
+                font-size: 1rem;
+            }
+
+            .btn-sm {
+                font-size: 0.8rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            /* Stack statistics cards */
+            .col-md-3.mb-3 {
+                margin-bottom: 1rem !important;
+            }
+
+            /* Hide even more table columns on very small screens */
+            .table th:nth-child(n+3),
+            .table td:nth-child(n+3) {
+                display: none;
+            }
+
+            /* Improve navigation */
+            .navbar-brand {
+                font-size: 1rem;
+            }
+
+            /* Better form layout */
+            .row .col-md-8,
+            .row .col-md-6,
+            .row .col-md-4 {
+                margin-bottom: 0.75rem;
             }
         }
     </style>
@@ -208,8 +359,8 @@
 </head>
 <body>
     <!-- Top Navigation -->
-    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="<?php echo BASE_URL; ?>">
+    <nav class="navbar navbar-dark bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="<?php echo url('index.php'); ?>">
             <i class="fas fa-brain"></i> <?php echo APP_NAME; ?>
         </a>
         
@@ -224,7 +375,7 @@
                         Welcome, <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'User'); ?>
                         <span class="badge bg-secondary"><?php echo ucfirst($_SESSION['user_role'] ?? 'user'); ?></span>
                     </span>
-                    <a class="nav-link px-3" href="auth/logout.php">
+                    <a class="nav-link px-3" href="<?php echo url('auth/logout.php'); ?>">
                         <i class="fas fa-sign-out-alt"></i> Sign out
                     </a>
                 <?php endif; ?>
@@ -262,6 +413,6 @@
         // Auto logout on session expiry
         setTimeout(function() {
             alert('Your session has expired. You will be redirected to the login page.');
-            window.location.href = 'auth/logout.php';
+            window.location.href = '<?php echo url('auth/logout.php'); ?>';
         }, sessionTimeout);
     </script>

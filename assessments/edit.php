@@ -98,8 +98,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Log audit
                 logAudit('assessment_subject_updated', 'assessment_subjects', $subjectId);
                 
-                redirect("view.php?id=$subjectId", 
-                        'Assessment information updated successfully.', 
+                redirect("view.php?id=$subjectId",
+                        'Assessment information updated successfully.',
                         'success');
                 
             } catch (Exception $e) {

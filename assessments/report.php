@@ -109,7 +109,46 @@ $disableRightClick = true; // Disable right-click for security
 include '../includes/header.php';
 ?>
 
-<div class="container-fluid">
+<!-- Fix header overlap with important declarations -->
+<style>
+    body {
+        padding-top: 70px !important; /* Account for fixed navbar height */
+    }
+    .container-fluid {
+        margin-top: 0 !important;
+        padding-top: 20px !important;
+    }
+    .sidebar {
+        top: 70px !important; /* Position sidebar below navbar */
+        height: calc(100vh - 70px) !important;
+        overflow-y: auto !important;
+        position: fixed !important;
+    }
+    .main-content {
+        margin-top: 0 !important;
+        padding-top: 20px !important;
+        min-height: calc(100vh - 156px) !important;
+        padding-bottom: 100px !important;
+    }
+    .navbar {
+        z-index: 1050 !important;
+    }
+    @media (max-width: 767.98px) {
+        body {
+            padding-top: 70px !important;
+        }
+        .sidebar {
+            position: relative !important;
+            top: 0 !important;
+            height: auto !important;
+        }
+        .main-content {
+            margin-left: 0 !important;
+        }
+    }
+</style>
+
+<div class="container-fluid" style="margin-top: 0 !important; padding-top: 20px !important;">
     <div class="row">
         <!-- Sidebar -->
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
@@ -140,7 +179,7 @@ include '../includes/header.php';
         </nav>
 
         <!-- Main content -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content" style="margin-top: 0 !important; padding-top: 30px !important;">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Assessment Report</h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
@@ -252,28 +291,31 @@ include '../includes/header.php';
                             <?php echo $reportData['report_data']; ?>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
+                    <div class="card-footer bg-light border-top">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
                                 <small class="text-muted">
-                                    Report Type: <?php echo ucfirst($reportData['report_type']); ?> | 
-                                    Status: <?php echo ucfirst($reportData['report_status']); ?>
+                                    <i class="fas fa-info-circle"></i>
+                                    Report Type: <strong><?php echo ucfirst($reportData['report_type']); ?></strong> |
+                                    Status: <strong><?php echo ucfirst($reportData['report_status']); ?></strong>
                                 </small>
                             </div>
-                            <div>
-                                <form method="POST" class="d-inline">
-                                    <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRFToken(); ?>">
-                                    <input type="hidden" name="report_type" value="<?php echo $reportData['report_type']; ?>">
-                                    <button type="submit" name="generate_report" class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-redo"></i> Regenerate
+                            <div class="col-md-6 text-end">
+                                <div class="btn-group" role="group">
+                                    <form method="POST" class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="<?php echo Security::generateCSRFToken(); ?>">
+                                        <input type="hidden" name="report_type" value="<?php echo $reportData['report_type']; ?>">
+                                        <button type="submit" name="generate_report" class="btn btn-sm btn-outline-secondary" title="Regenerate Report">
+                                            <i class="fas fa-redo"></i> Regenerate
+                                        </button>
+                                    </form>
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="printReport()" title="Print Report">
+                                        <i class="fas fa-print"></i> Print
                                     </button>
-                                </form>
-                                <button type="button" class="btn btn-sm btn-primary ms-2" onclick="printReport()">
-                                    <i class="fas fa-print"></i> Print
-                                </button>
-                                <a href="report.php?id=<?php echo $subjectId; ?>&action=download" class="btn btn-sm btn-success ms-2">
-                                    <i class="fas fa-download"></i> Download
-                                </a>
+                                    <a href="report.php?id=<?php echo $subjectId; ?>&action=download" class="btn btn-sm btn-success" title="Download Report">
+                                        <i class="fas fa-download"></i> Download
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -307,6 +349,51 @@ document.addEventListener('selectstart', function(e) {
 document.addEventListener('dragstart', function(e) {
     e.preventDefault();
 });
+
+// Force fix header overlap on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Force scroll to top to ensure proper positioning
+    window.scrollTo(0, 0);
+
+    // Apply header fix styles
+    document.body.style.paddingTop = '70px';
+    document.body.style.marginTop = '0';
+
+    const containerFluid = document.querySelector('.container-fluid');
+    if (containerFluid) {
+        containerFluid.style.marginTop = '0';
+        containerFluid.style.paddingTop = '20px';
+    }
+
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+        mainContent.style.marginTop = '0';
+        mainContent.style.paddingTop = '30px';
+    }
+});
 </script>
+
+<!-- Final CSS override to ensure header fix -->
+<style>
+    body {
+        padding-top: 70px !important;
+        margin-top: 0 !important;
+    }
+    .container-fluid {
+        margin-top: 0 !important;
+        padding-top: 20px !important;
+    }
+    .main-content {
+        margin-top: 0 !important;
+        padding-top: 30px !important;
+    }
+    .navbar {
+        z-index: 1050 !important;
+    }
+    .sidebar {
+        top: 70px !important;
+        height: calc(100vh - 70px) !important;
+    }
+</style>
 
 <?php include '../includes/footer.php'; ?>

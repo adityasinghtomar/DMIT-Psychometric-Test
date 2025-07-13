@@ -193,7 +193,7 @@ include '../includes/header.php';
                     <?php if (empty($fingerprintData)): ?>
                         <div class="alert alert-warning">
                             <i class="fas fa-exclamation-triangle"></i> No fingerprint data collected yet.
-                            <a href="fingerprint_collection.php?id=<?php echo $subjectId; ?>" class="btn btn-sm btn-warning ms-2">
+                            <a href="<?php echo url('assessments/fingerprint_collection.php?id=' . $subjectId); ?>" class="btn btn-sm btn-warning ms-2">
                                 Collect Fingerprints
                             </a>
                         </div>
@@ -281,7 +281,7 @@ include '../includes/header.php';
                         <div class="alert alert-info mt-3">
                             <i class="fas fa-info-circle"></i> 
                             <?php echo (10 - count($fingerprintData)); ?> more fingerprint(s) needed for complete analysis.
-                            <a href="fingerprint_collection.php?id=<?php echo $subjectId; ?>" class="btn btn-sm btn-info ms-2">
+                            <a href="<?php echo url('assessments/fingerprint_collection.php?id=' . $subjectId); ?>" class="btn btn-sm btn-info ms-2">
                                 Complete Collection
                             </a>
                         </div>

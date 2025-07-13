@@ -111,38 +111,38 @@ include 'includes/header.php';
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse" id="sidebarMenu">
             <div class="position-sticky pt-3">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.php">
+                        <a class="nav-link active" href="<?php echo url('index.php'); ?>">
                             <i class="fas fa-tachometer-alt"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="assessments/new.php">
+                        <a class="nav-link" href="<?php echo url('assessments/new.php'); ?>">
                             <i class="fas fa-plus-circle"></i> New Assessment
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="assessments/list.php">
+                        <a class="nav-link" href="<?php echo url('assessments/list.php'); ?>">
                             <i class="fas fa-list"></i> View Assessments
                         </a>
                     </li>
                     <?php if ($userRole === 'admin'): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="admin/dashboard.php">
+                        <a class="nav-link" href="<?php echo url('admin/dashboard.php'); ?>">
                             <i class="fas fa-cog"></i> Admin Panel
                         </a>
                     </li>
                     <?php endif; ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="profile/settings.php">
+                        <a class="nav-link" href="<?php echo url('profile/settings.php'); ?>">
                             <i class="fas fa-user-cog"></i> Profile Settings
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="help/user_guide.php">
+                        <a class="nav-link" href="<?php echo url('help/user_guide.php'); ?>">
                             <i class="fas fa-question-circle"></i> Help & Support
                         </a>
                     </li>
@@ -158,7 +158,7 @@ include 'includes/header.php';
                 </h1>
                 <div class="btn-toolbar mb-2 mb-md-0">
                     <div class="btn-group me-2">
-                        <a href="assessments/new.php" class="btn btn-sm btn-primary">
+                        <a href="<?php echo url('assessments/new.php'); ?>" class="btn btn-sm btn-primary">
                             <i class="fas fa-plus"></i> New Assessment
                         </a>
                     </div>
@@ -262,39 +262,39 @@ include 'includes/header.php';
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3 mb-3">
-                                    <a href="assessments/new.php" class="btn btn-outline-primary w-100 h-100 d-flex flex-column justify-content-center">
+                                    <a href="<?php echo url('assessments/new.php'); ?>" class="btn btn-outline-primary w-100 h-100 d-flex flex-column justify-content-center">
                                         <i class="fas fa-plus-circle fa-2x mb-2"></i>
                                         <span>Create New Assessment</span>
                                     </a>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <a href="assessments/list.php" class="btn btn-outline-success w-100 h-100 d-flex flex-column justify-content-center">
+                                    <a href="<?php echo url('assessments/list.php'); ?>" class="btn btn-outline-success w-100 h-100 d-flex flex-column justify-content-center">
                                         <i class="fas fa-list fa-2x mb-2"></i>
                                         <span>View All Assessments</span>
                                     </a>
                                 </div>
                                 <?php if ($userRole === 'admin'): ?>
                                 <div class="col-md-3 mb-3">
-                                    <a href="admin/users.php" class="btn btn-outline-warning w-100 h-100 d-flex flex-column justify-content-center">
+                                    <a href="<?php echo url('admin/users.php'); ?>" class="btn btn-outline-warning w-100 h-100 d-flex flex-column justify-content-center">
                                         <i class="fas fa-users fa-2x mb-2"></i>
                                         <span>Manage Users</span>
                                     </a>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <a href="admin/security.php" class="btn btn-outline-info w-100 h-100 d-flex flex-column justify-content-center">
+                                    <a href="<?php echo url('admin/security.php'); ?>" class="btn btn-outline-info w-100 h-100 d-flex flex-column justify-content-center">
                                         <i class="fas fa-shield-alt fa-2x mb-2"></i>
                                         <span>Security Logs</span>
                                     </a>
                                 </div>
                                 <?php else: ?>
                                 <div class="col-md-3 mb-3">
-                                    <a href="profile/settings.php" class="btn btn-outline-warning w-100 h-100 d-flex flex-column justify-content-center">
+                                    <a href="<?php echo url('profile/settings.php'); ?>" class="btn btn-outline-warning w-100 h-100 d-flex flex-column justify-content-center">
                                         <i class="fas fa-user-cog fa-2x mb-2"></i>
                                         <span>Profile Settings</span>
                                     </a>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <a href="help/user_guide.php" class="btn btn-outline-info w-100 h-100 d-flex flex-column justify-content-center">
+                                    <a href="<?php echo url('help/user_guide.php'); ?>" class="btn btn-outline-info w-100 h-100 d-flex flex-column justify-content-center">
                                         <i class="fas fa-question-circle fa-2x mb-2"></i>
                                         <span>Help & Support</span>
                                     </a>
@@ -319,7 +319,7 @@ include 'includes/header.php';
                                     <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
                                     <h5>No Assessments Yet</h5>
                                     <p class="text-muted">Start by creating your first assessment.</p>
-                                    <a href="assessments/new.php" class="btn btn-primary">
+                                    <a href="<?php echo url('assessments/new.php'); ?>" class="btn btn-primary">
                                         <i class="fas fa-plus"></i> Create Assessment
                                     </a>
                                 </div>
@@ -376,7 +376,7 @@ include 'includes/header.php';
                                 </div>
                                 
                                 <div class="text-center mt-3">
-                                    <a href="assessments/list.php" class="btn btn-outline-primary">
+                                    <a href="<?php echo url('assessments/list.php'); ?>" class="btn btn-outline-primary">
                                         <i class="fas fa-list"></i> View All Assessments
                                     </a>
                                 </div>
