@@ -343,10 +343,10 @@ include '../includes/header.php';
                                             <td><strong>Application Version:</strong></td>
                                             <td><?php echo APP_VERSION; ?></td>
                                         </tr>
-                                        <tr>
+                                        <!--<tr>
                                             <td><strong>PHP Version:</strong></td>
                                             <td><?php echo PHP_VERSION; ?></td>
-                                        </tr>
+                                        </tr>-->
                                         <tr>
                                             <td><strong>Server Software:</strong></td>
                                             <td><?php echo $_SERVER['SERVER_SOFTWARE'] ?? 'Unknown'; ?></td>
